@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:login_textformfield/main.dart';
 import 'package:login_textformfield/view/login_screen.dart';
-
-String pass = "";
-String passconfirm = "";
-String email = "";
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -14,6 +11,9 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       height: 40,
                     ),
                     TextFormField(
-                      onChanged: (value) {
-                        email = value;
-                      },
+                      controller: emailController,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
@@ -65,18 +63,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       validator: (value) {
-                        if (!value!.contains("@")) {
-                          return "enter a valid email ID";
-                        } else {
+                        if (emailController.text.isNotEmpty &&
+                            emailController.text.contains("@")) {
                           return null;
+                        } else if (emailController.text.isEmpty) {
+                          return "Please enter your email adress";
+                        } else if (!emailController.text.contains("@")) {
+                          return "enter a valid email";
                         }
                       },
                     ),
                     SizedBox(height: 20),
                     TextFormField(
-                      onChanged: (value) {
-                        pass = value;
-                      },
+                      controller: passwordController,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
@@ -87,10 +86,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       validator: (value) {
-                        if (value!.length < 3) {
-                          return "enter a valid text";
-                        } else {
+                        if (passwordController.text.isNotEmpty &&
+                            passwordController.text.length >= 6) {
                           return null;
+                        } else if (passwordController.text.isEmpty) {
+                          return "Please enter a password";
+                        } else if (passwordController.text.length < 6) {
+                          return "password must contain atleast 6 characters";
                         }
                       },
                     ),
@@ -98,9 +100,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       height: 20,
                     ),
                     TextFormField(
-                      onChanged: (value) {
-                        passconfirm = value;
-                      },
+                      controller: confirmPasswordController,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
@@ -111,12 +111,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       validator: (value) {
-                        if (value! != pass) {
-                          return "Password not match";
-                        } else if (value.isEmpty) {
-                          return "Re-enter the password";
-                        } else {
+                        if (confirmPasswordController.text.isNotEmpty &&
+                            confirmPasswordController.text ==
+                                passwordController.text) {
                           return null;
+                        } else if (confirmPasswordController.text.isEmpty) {
+                          return "please enter the password";
+                        } else if (confirmPasswordController.text !=
+                            passwordController.text) {
+                          return "Paswword not match";
                         }
                       },
                     ),
@@ -140,6 +143,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     InkWell(
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
+                          email = emailController.text;
+                          password = passwordController.text;
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -150,7 +155,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: Container(
                         child: Center(
                           child: Text(
-                            "Sign in",
+                            "Sign up",
                             style: TextStyle(color: Colors.white),
                           ),
                         ),

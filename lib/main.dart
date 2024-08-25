@@ -5,13 +5,15 @@ void main() {
   runApp(MyApp());
 }
 
+String email = "";
+String password = "";
+
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: LoginScreen()
-    );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: LoginScreen());
   }
 }

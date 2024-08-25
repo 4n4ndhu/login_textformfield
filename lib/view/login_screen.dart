@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:login_textformfield/main.dart';
 import 'package:login_textformfield/view/logout_screen.dart';
 import 'package:login_textformfield/view/register_screen.dart';
 
@@ -14,6 +15,9 @@ class LoginScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,9 +41,7 @@ class _HomeScreenState extends State<LoginScreen> {
                   height: 40,
                 ),
                 TextFormField(
-                  onChanged: (value) {
-                    Lpass = value;
-                  },
+                  controller: emailController,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey),
@@ -50,20 +52,19 @@ class _HomeScreenState extends State<LoginScreen> {
                     ),
                   ),
                   validator: (value) {
-                    if (value! != email) {
-                      return "Enter a valid email";
-                    } else if (value.isEmpty) {
-                      return "Enter a valid email ID";
-                    } else {
+                    if (emailController.text.isNotEmpty &&
+                        emailController.text.contains("@")) {
                       return null;
+                    } else if (emailController.text.isEmpty) {
+                      return "Please enter your email adress";
+                    } else if (!emailController.text.contains("@")) {
+                      return "enter a valid email";
                     }
                   },
                 ),
                 SizedBox(height: 20),
                 TextFormField(
-                  onChanged: (value) {
-                    Lpass = value;
-                  },
+                  controller: passwordController,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey),
@@ -74,12 +75,13 @@ class _HomeScreenState extends State<LoginScreen> {
                     ),
                   ),
                   validator: (value) {
-                    if (value! != pass) {
-                      return "Password Incorect";
-                    } else if (value.isEmpty) {
-                      return "Enter Password";
-                    } else {
+                    if (passwordController.text.isNotEmpty &&
+                        passwordController.text.length >= 6) {
                       return null;
+                    } else if (passwordController.text.isEmpty) {
+                      return "Please enter a password";
+                    } else if (passwordController.text.length < 6) {
+                      return "password must contain atleast 6 characters";
                     }
                   },
                 ),
@@ -103,10 +105,14 @@ class _HomeScreenState extends State<LoginScreen> {
                 InkWell(
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LogoutScreen()));
+                      if (emailController.text == email &&
+                          passwordController.text == password) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LogoutScreen(),
+                            ));
+                      }
                     }
                   },
                   child: Container(
